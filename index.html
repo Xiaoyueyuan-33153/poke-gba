@@ -46,6 +46,7 @@
     <p style="margin-bottom:24px;font-size:14px;color:#9b8fb5">正在进入游戏…</p>
     <div class="spin"></div>
   </div>
+  <a id="go" href="https://poke-gba-emulator.app.workbuddy.host/?sharecode=EKLEU7IBUC" style="display:none"></a>
 
 <script>
   var GAME = 'https://poke-gba-emulator.app.workbuddy.host/?sharecode=EKLEU7IBUC';
@@ -53,12 +54,17 @@
   function start(){
     document.getElementById('home').style.display='none';
     document.getElementById('loading').style.display='flex';
-    window.location.href = GAME;
+    // 用真实链接点击触发跳转，iOS web app 下比 location.href 更可靠
+    var a = document.getElementById('go');
+    if (a) { a.click(); }
+    window.location.replace(GAME);
   }
 
   // 从桌面图标打开（独立全屏模式）时自动进入游戏；
   // 在 Safari 里正常浏览时停留在引导页，确保「添加到主屏幕」捕获的是这个无参数地址
-  if (navigator.standalone === true) {
+  var standalone = (navigator.standalone === true) ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  if (standalone) {
     start();
   }
 </script>
