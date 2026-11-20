@@ -13,53 +13,54 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;background:#080414;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
-    display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden}
-  .logo{width:96px;height:96px;border-radius:22px;box-shadow:0 8px 30px rgba(123,63,228,.5);margin-bottom:24px}
-  h1{font-size:20px;font-weight:600;letter-spacing:1px;margin-bottom:8px}
-  p{font-size:13px;color:#9b8fb5;margin-bottom:28px}
-  .spin{width:34px;height:34px;border:3px solid #2a1b45;border-top-color:#a56bff;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;padding:24px}
+  .logo{width:92px;height:92px;border-radius:20px;box-shadow:0 8px 30px rgba(123,63,228,.5);margin-bottom:20px}
+  h1{font-size:21px;font-weight:600;letter-spacing:1px;margin-bottom:24px}
+  .card{background:#16102a;border:1px solid #2c1d4d;border-radius:16px;padding:20px 22px;max-width:340px;width:100%}
+  .step{display:flex;align-items:flex-start;gap:12px;margin:12px 0;font-size:14px;line-height:1.5;color:#d6cbe8}
+  .num{flex:none;width:24px;height:24px;border-radius:50%;background:#6a3fb0;color:#fff;
+    font-size:13px;display:flex;align-items:center;justify-content:center;font-weight:600}
+  .arrow{font-size:19px;color:#a56bff}
+  .btn{margin-top:22px;padding:13px 34px;border:none;border-radius:26px;color:#fff;
+    font-size:15px;font-weight:600;background:linear-gradient(135deg,#7b3fe4,#a56bff);
+    box-shadow:0 6px 20px rgba(123,63,228,.4)}
+  .note{margin-top:18px;font-size:12px;color:#7d7196;text-align:center;line-height:1.6}
+  .spin{width:32px;height:32px;border:3px solid #2a1b45;border-top-color:#a56bff;border-radius:50%;
     animation:sp .8s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
-  .btn{margin-top:22px;padding:11px 26px;border:1px solid #6a3fb0;border-radius:22px;color:#c9a8ff;
-    font-size:14px;background:transparent;display:none}
-  .err{color:#ff8a8a;font-size:13px;margin-top:16px;display:none;padding:0 24px;text-align:center;line-height:1.6}
 </style>
 </head>
 <body>
   <img class="logo" src="apple-touch-icon.png" alt="">
   <h1>漆黑的魅影</h1>
-  <p id="tip">正在启动…</p>
-  <div class="spin" id="spin"></div>
-  <div class="err" id="err"></div>
-  <button class="btn" id="btn" onclick="goBackup()">点此使用备用线路</button>
+  <div id="home">
+    <div class="card">
+      <div class="step"><span class="num">1</span><span>点底部中间的「分享」按钮 <span class="arrow">↗</span></span></div>
+      <div class="step"><span class="num">2</span><span>下滑菜单里选「添加到主屏幕」</span></div>
+      <div class="step"><span class="num">3</span><span>点右上角「添加」，回到桌面</span></div>
+    </div>
+    <div class="note">添加后从桌面图标打开，即可直接开始游戏<br>不添加也可以，点下面按钮直接玩</div>
+    <button class="btn" onclick="start()">直接开始游戏</button>
+  </div>
+  <div id="loading" style="display:none;align-items:center;flex-direction:column">
+    <p style="margin-bottom:24px;font-size:14px;color:#9b8fb5">正在进入游戏…</p>
+    <div class="spin"></div>
+  </div>
 
 <script>
-  // 完整游戏地址（参数写死在 JS 里，iOS 桌面图标不会剥离）
   var GAME = 'https://poke-gba-emulator.app.workbuddy.host/?sharecode=EKLEU7IBUC';
-  // 备用：GitHub 上的完整游戏（无参数，但国内较慢）
-  var BACKUP = 'game.html';
-  var jumped = false;
 
-  function goBackup(){
-    window.location.replace(BACKUP);
-  }
-  function go(){
-    if(jumped) return;
-    jumped = true;
-    window.location.replace(GAME);
-    // 若 4 秒后还留在本页（说明目标站异常），提示用户走备用线路
-    setTimeout(function(){
-      document.getElementById('spin').style.display='none';
-      document.getElementById('tip').style.display='none';
-      var e=document.getElementById('err');
-      e.style.display='block';
-      e.innerHTML='主服务器连接较慢，可点下方按钮改用备用线路（加载较慢但可用）。';
-      document.getElementById('btn').style.display='inline-block';
-    }, 4000);
+  function start(){
+    document.getElementById('home').style.display='none';
+    document.getElementById('loading').style.display='flex';
+    window.location.href = GAME;
   }
 
-  // 立刻跳转
-  go();
+  // 从桌面图标打开（独立全屏模式）时自动进入游戏；
+  // 在 Safari 里正常浏览时停留在引导页，确保「添加到主屏幕」捕获的是这个无参数地址
+  if (navigator.standalone === true) {
+    start();
+  }
 </script>
 </body>
 </html>
